@@ -2,9 +2,14 @@
     "openapi": "3.0.0",
     "info": {
         "title": "User API CRUD Example",
-        "version": "1.0.0",
+        "version": "1.0.1",
         "description": "API for managing user data."
     },
+    "servers": [
+        {
+            "url": "http://localhost:3000/api/v1"
+        }
+    ],
     "tags": [
         {
             "name": "Users",
@@ -12,7 +17,7 @@
         }
     ],
     "paths": {
-        "/api/users": {
+        "/users": {
             "get": {
                 "tags": [
                     "Users"
@@ -80,7 +85,7 @@
                 }
             }
         },
-        "/api/users/{id}": {
+        "/users/{id}": {
             "get": {
                 "tags": [
                     "Users"

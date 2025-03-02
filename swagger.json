@@ -1,0 +1,406 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "User API CRUD Example",
+        "version": "1.0.0",
+        "description": "API for managing user data."
+    },
+    "tags": [
+        {
+            "name": "Users",
+            "description": "Operations for managing user data"
+        }
+    ],
+    "paths": {
+        "/api/users": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get all users",
+                "description": "Retrieve a list of all registered users",
+                "operationId": "getAllUsers",
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/UsersResponse"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalError"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Create a new user",
+                "description": "Register a new user with the required information",
+                "operationId": "createUser",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            },
+                            "examples": {
+                                "newUser": {
+                                    "summary": "Basic new user",
+                                    "value": {
+                                        "name": "Jane Smith",
+                                        "email": "jane.smith@example.com"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "$ref": "#/components/responses/UserResponse"
+                    },
+                    "400": {
+                        "description": "Invalid user data provided",
+                        "content": {
+                            "application/json": {
+                                "examples": {
+                                    "missingEmail": {
+                                        "summary": "Missing name or email field",
+                                        "value": {
+                                            "message": "Name and email are required"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/InternalError"
+                    }
+                }
+            }
+        },
+        "/api/users/{id}": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get user by ID",
+                "description": "Retrieve detailed information for a specific user",
+                "operationId": "getUserById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "examples": {
+                            "userId1": {
+                                "summary": "User ID 1",
+                                "value": 1
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/UserResponse"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Update user by ID",
+                "description": "Update an existing user's information",
+                "operationId": "updateUser",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "examples": {
+                            "userId1": {
+                                "summary": "User ID 1",
+                                "value": 1
+                            }
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            },
+                            "examples": {
+                                "updateName": {
+                                    "summary": "Update user name",
+                                    "value": {
+                                        "name": "John Smith Updated"
+                                    }
+                                },
+                                "updateEmail": {
+                                    "summary": "Update user email",
+                                    "value": {
+                                        "email": "john.updated@example.com"
+                                    }
+                                },
+                                "updateBoth": {
+                                    "summary": "Update both name and email",
+                                    "value": {
+                                        "name": "John Smith Updated",
+                                        "email": "john.updated@example.com"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/UserResponse"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Delete user by ID",
+                "description": "Remove a user from the system",
+                "operationId": "deleteUser",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "examples": {
+                            "userId1": {
+                                "summary": "User ID 1",
+                                "value": 1
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "$ref": "#/components/responses/DeletionResponse"
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/BadRequest"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/NotFound"
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "User": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "description": "The auto-generated ID of the user",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "The user's name",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "description": "The user's email address",
+                        "example": "john.doe@example.com"
+                    },
+                    "createdAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "description": "The user creation timestamp",
+                        "example": "2023-03-02T15:30:00Z"
+                    }
+                },
+                "required": [
+                    "name",
+                    "email"
+                ]
+            }
+        },
+        "responses": {
+            "UsersResponse": {
+                "description": "List of all users",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        },
+                        "examples": {
+                            "emptyList": {
+                                "summary": "Empty users list",
+                                "value": []
+                            },
+                            "multipleUsers": {
+                                "summary": "Multiple users",
+                                "value": [
+                                    {
+                                        "id": 1,
+                                        "name": "John Doe",
+                                        "email": "john.doe@example.com",
+                                        "createdAt": "2023-03-02T15:30:00Z"
+                                    },
+                                    {
+                                        "id": 2,
+                                        "name": "Jane Smith",
+                                        "email": "jane.smith@example.com",
+                                        "createdAt": "2023-03-03T09:45:00Z"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            },
+            "UserResponse": {
+                "description": "User data",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/User"
+                        },
+                        "examples": {
+                            "userExample": {
+                                "summary": "Sample user data",
+                                "value": {
+                                    "id": 1,
+                                    "name": "John Doe",
+                                    "email": "john.doe@example.com",
+                                    "createdAt": "2023-03-02T15:30:00Z"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "DeletionResponse": {
+                "description": "User deleted successfully",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "User 1 deleted successfully"
+                                }
+                            }
+                        },
+                        "examples": {
+                            "successfulDeletion": {
+                                "summary": "Successful user deletion",
+                                "value": {
+                                    "message": "User 1 deleted successfully"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "BadRequest": {
+                "description": "Bad request, ID is required",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "ID is required"
+                                }
+                            }
+                        },
+                        "examples": {
+                            "missingId": {
+                                "summary": "Missing user ID",
+                                "value": {
+                                    "message": "ID is required"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "NotFound": {
+                "description": "User not found",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "User not found"
+                                }
+                            }
+                        },
+                        "examples": {
+                            "userNotFound": {
+                                "summary": "User not found",
+                                "value": {
+                                    "message": "User with ID 999 not found"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "InternalError": {
+                "description": "Internal server error",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "Internal server error"
+                                }
+                            }
+                        },
+                        "examples": {
+                            "serverError": {
+                                "summary": "Server connection error",
+                                "value": {
+                                    "message": "Internal server error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
